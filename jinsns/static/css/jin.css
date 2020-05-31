@@ -1,0 +1,42 @@
+.my-bg-dark {
+    background-color: #760c0c;
+}
+
+.jumbotron {
+    background-image: url(../image/milkyway.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    color: white;
+    font-weight: bold !important;
+}
+
+.my-btn-primary {
+    color: white;
+    background-color: black;
+    border-color: #6c757d;
+    font-weight: bold;
+}
+
+.form-post {
+    max-width: 500px;
+    padding: 2rem;
+    margin: 2rem auto;
+    border-radius: 0.3rem;
+    display: block;
+}
+
+.form-group {
+    color: white;
+    font-weight: bold;
+}
+
+#posting-box {
+    display: none;
+}
+
+.my-btn-outline-secondary {
+    color: white !important
+}
