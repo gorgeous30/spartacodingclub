@@ -1,0 +1,18 @@
+h1 {
+    color: blue;
+  }
+
+  .header {
+    color: black;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  #my-id {
+      background-color: blue;
+  }
+
+  body > p > #my-id {
+      color: red;
+  }
+  
+  /* CSS comment */
