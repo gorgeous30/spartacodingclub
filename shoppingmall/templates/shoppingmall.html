@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+		
+		<!-- Webpage Title -->
+    <title>Jin Shopping Mall</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <style>
+      #order-button { 
+        color: #495057;
+        background-color: #e9ecef;
+        border-color: white;
+      }
+      th, td {
+        text-align: center;
+      }
+      th {
+        width: 494px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- JS -->		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+$(document).ready(function () {
+    $('#orders-box').html('');
+    listing();
+});
+
+function make_order() {
+   // 1. 주문자 이름, 수량, 주소를 가져옵니다
+   let name_give = $('#name').val();
+          let volume_give = $('#volume').val();
+          let address_give = $('#address').val();
+
+          // 2. 주문자 이름, 수량, 주소 중 하나라도 입력하지 않았을 경우 alert를 띄우고 focus를 빈 칸에 맞춥니다.
+          if (name_give == '') {
+              alert('주문자 이름을 입력해주세요');
+              $('#name').focus();
+              return;
+          } else if (volume_give == '선택하세요(3팩 한정)') {
+              alert('수량을 선택해주세요');
+              $('#volume').focus();
+              return;
+            } else if (address_give == '') {
+              alert('주소를 입력해주세요');
+              $('#address').focus();
+              return;                
+              }
+
+              let data_give = {
+                'name_give': name_give,
+                'volume_give': volume_give,
+                'address_give': address_give
+            }
+            // 3. POST /orders 에 저장을 요청합니다.
+            $.ajax({
+                type: 'POST', // 타입을 작성합니다.
+                url: '/orders', // url을 작성합니다.
+                data: data_give, // data를 작성합니다. },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        window.location.reload();
+                    }
+                }
+            });
+}   
+
+        function listing() {
+            // 1. 주문 목록을 서버에 요청하기
+            // 2. 요청 성공 여부 확인하기
+            // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let orders = response['orders'];
+                        // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
+                        for (let i = 0; i<orders.length; i++) {
+                            let order = orders[i];
+                            let name = order['name'];
+                            let volume = order['volume'];
+                            let address = order['address'];
+
+                            make_card(name, volume, address);
+                        }
+                    } else {
+                        alert('주문을 받아오지 못했습니다');
+                    }
+                }
+            });
+        }
+
+        function make_card(name, volume, address) {
+            let temp_html = '<tr>\
+                                <td>'+ name + '</td>\
+                                <td>'+ volume + '</td>\
+                                <td>'+ address + '</td>\
+                            </tr>';
+            $('#orders-box').append(temp_html);
+        }
+
+        </script>
+
+    <div style="font-family: 'Do Hyeon', sans-serif; padding-left: 200px; padding-right: 200px;">
+      <div class="text-center" style="padding-top: 20px;">
+      <img src="https://hips.hearstapps.com/delish/assets/18/11/1520887294-cobb-salad-delish.jpg" alt="샐러드 사진" width="70%" height="70%" class="rounded"/>  
+      </div>      
+    <br>
+      <p><h2 style="display: inline; padding-right: 20px;">영양만점 그린샐러드</h2>가격 : 3,000원 / 팩</p>
+ 몸에 좋은 건강한 그린샐러드입니다. 필수 영양소인 탄수화물,단백질,식이섬유를 한번에! 
+</br>주문하는 즉시 다음날 아침까지 집 앞으로 배송해드려요. 간편한 샐러드 한 끼로 건강까지 챙겨보세요.
+<p><h2 style="display: inline; padding-right: 20px;">지금 바로 주문하기</h2></p>  
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-default01">주문자 이름</span>
+  </div>
+  <input type="text" class="form-control" id="name" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <label class="input-group-text" for="inputGroupSelect01">수량</label>
+  </div>
+  <select class="custom-select" id="volume">
+    <option selected>선택하세요(3팩 한정)</option>
+    <option value="1">1팩</option>
+    <option value="2">2팩</option>
+    <option value="3">3팩</option>
+  </select>
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-default02">주소</span>
+  </div>
+  <input type="text" class="form-control" id="address" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+</div>
+<div class="text-center">
+  <button type="button" class="btn btn-primary" id="order-button" data-toggle="button" aria-pressed="false" onclick="make_order()">
+    주문하기
+  </button>
+</div>
+<p></p>
+<div class="orders">
+  <table class="table">
+      <thead>
+          <tr>
+              <th scope="col">주문자 이름</th>
+              <th scope="col">수량</th>
+              <th scope="col">주소</th>
+          </tr>
+      </thead>
+      <tbody id="orders-box">
+          <tr>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+<p></p>
+</div>
+  </body>
+</body>
+</html> 
